@@ -72,7 +72,7 @@ function setSearch(search: string | string[] | number | number[]) {
       },
       {}
     );
-  } else return search;
+  } else return getEmptyEnum(search);
 }
 function getEmptyEnum(search: string | number): any {
   if (isString(search) && isEmptyEnum(search)) {
