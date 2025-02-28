@@ -1,0 +1,82 @@
+import {
+  Columns,
+  FilterArgs,
+  isEmptyEnum,
+} from "./typings";
+import {
+  has,
+  isArray,
+  isEmpty,
+  isNumber,
+  isString,
+  merge,
+  pick,
+  reduce,
+  set,
+} from "lodash";
+
+export function handleSearchData(filter: FilterArgs) {
+  let where: Record<string, any> = {};
+
+  if (filter.columns) {
+    setColumns(filter.columns, where);
+  }
+  if (filter.or || filter.and) {
+    merge(
+      where,
+      reduce(
+        pick(filter, ["or", "and"]),
+        (result: Record<string, any[]>, current, index: string) => {
+          const value = {};
+          setColumns(current, value);
+          if (!isEmpty(value)) {
+            const key = index.toUpperCase();
+            if (!has(result, key)) set(result, key, []);
+            result[key].push(value);
+          }
+
+          return result;
+        },
+        {}
+      )
+    );
+  }
+  if (filter.dateRange) {
+    const { from, to, name } = filter.dateRange;
+    if (from) {
+      set(where, name + ".gte", new Date(new Date(from).setHours(0, 0, 0)));
+    }
+    if (to) {
+      set(where, name + ".lte", new Date(new Date(to).setHours(0, 0, 0)));
+    }
+  }
+  return where;
+}
+function setColumns(columns: Columns[], where: Record<string, any>) {
+  if (columns) {
+    for (const col of columns) {
+      //seting search
+      if (col.search) {
+        set(where, col.name, setSearch(col.search));
+      }
+    }
+  }
+}
+function setSearch(search: String | string[] | number | number[]) {
+  if (isArray(search)) {
+    return reduce(
+      search,
+      (result, val: string | number, index: number) => {
+        set(result, `in[${index}]`, getEmptyEnum(val));
+        return result;
+      },
+      {}
+    );
+  } else return search;
+}
+function getEmptyEnum(search: string | number): any {
+  if (isString(search) && isEmptyEnum(search)) {
+    return search == "null" ? { is: null } : { not: null };
+  }
+  return search;
+}
