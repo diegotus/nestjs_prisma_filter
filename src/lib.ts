@@ -1,8 +1,4 @@
-import {
-  Columns,
-  FilterArgs,
-  isEmptyEnum,
-} from "./typings";
+import { Columns, FilterArgs, isEmptyEnum } from "./typings";
 import {
   has,
   isArray,
@@ -44,10 +40,14 @@ export function handleSearchData(filter: FilterArgs) {
   if (filter.dateRange) {
     const { from, to, name } = filter.dateRange;
     if (from) {
-      set(where, name + ".gte", new Date(new Date(from).setHours(0, 0, 0)));
+      set(where, name + ".gte", new Date(new Date(from).setHours(0, 0, 0, 0)));
     }
     if (to) {
-      set(where, name + ".lte", new Date(new Date(to).setHours(0, 0, 0)));
+      set(
+        where,
+        name + ".lte",
+        new Date(new Date(to).setHours(23, 59, 59, 999))
+      );
     }
   }
   return where;
@@ -64,9 +64,9 @@ function setColumns(columns: Columns[], where: Record<string, any>) {
 }
 function setSearch(search: string | string[] | number | number[]) {
   if (isArray(search)) {
-    return reduce<string|number,Record<string, any>>(
+    return reduce<string | number, Record<string, any>>(
       search,
-      (result:Record<string, any>, val:string|number, index:number) => {
+      (result: Record<string, any>, val: string | number, index: number) => {
         set(result, `in[${index}]`, getEmptyEnum(val));
         return result;
       },
