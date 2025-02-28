@@ -15,7 +15,7 @@
     "typescript": "^4.8.4"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc && esbuild --bundle src/index.ts --outdir=dist --minify --platform=node --packages=external",
+    "build": "tsc && esbuild --bundle src/index.ts --outdir=dist --minify --platform=node --packages=external",
     "test": "jest"
   },
   "repository": {
