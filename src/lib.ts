@@ -62,11 +62,11 @@ function setColumns(columns: Columns[], where: Record<string, any>) {
     }
   }
 }
-function setSearch(search: String | string[] | number | number[]) {
+function setSearch(search: string | string[] | number | number[]) {
   if (isArray(search)) {
-    return reduce(
+    return reduce<string|number,Record<string, any>>(
       search,
-      (result, val: string | number, index: number) => {
+      (result:Record<string, any>, val:string|number, index:number) => {
         set(result, `in[${index}]`, getEmptyEnum(val));
         return result;
       },

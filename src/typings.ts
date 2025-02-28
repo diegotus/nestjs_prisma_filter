@@ -22,7 +22,7 @@ export interface DateRangeOptions {
 
 export interface Columns {
   name: string;
-  search?: EmptyEnum | String | string[] | number | number[];
+  search?: EmptyEnum | string | string[] | number | number[];
   orderBy?: Sort;
 }
 
