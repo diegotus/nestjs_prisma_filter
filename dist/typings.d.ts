@@ -19,7 +19,7 @@ export interface DateRangeOptions {
 }
 export interface Columns {
     name: string;
-    search?: EmptyEnum | string | string[] | number | number[];
+    search?: EmptyEnum | string |  number| boolean | string[] | number[] | boolean[];
     orderBy?: Sort;
 }
 export declare function isEmptyEnum(value: string): boolean;
