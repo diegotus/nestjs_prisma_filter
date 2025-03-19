@@ -12,6 +12,8 @@ export interface FilterArgs {
   dateRange?: DateRangeOptions;
   or: Columns[];
   and: Columns[];
+  take?: number;
+  skip?: number;
 }
 
 export interface DateRangeOptions {
@@ -28,4 +30,10 @@ export interface Columns {
 
 export function isEmptyEnum(value: string): boolean {
   return Object.values(EmptyEnum).includes(value);
+}
+
+export interface PrismaFilterData {
+  where:  Record<string, any>;
+  skip?: number;
+  take?: number;
 }

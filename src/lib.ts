@@ -1,4 +1,4 @@
-import { Columns, FilterArgs, isEmptyEnum } from "./typings";
+import { Columns, FilterArgs, isEmptyEnum, PrismaFilterData } from "./typings";
 import {
   has,
   isArray,
@@ -11,15 +11,19 @@ import {
   set,
 } from "lodash";
 
-export function handleSearchData(filter: FilterArgs) {
-  let where: Record<string, any> = {};
+export function handleSearchData(filter: FilterArgs): PrismaFilterData {
+  let data: PrismaFilterData = {
+    where: {},
+    skip:filter.skip,
+    take:filter.take
+  };
 
   if (filter.columns) {
-    setColumns(filter.columns, where);
+    setColumns(filter.columns, data.where);
   }
   if (filter.or || filter.and) {
     merge(
-      where,
+      data.where,
       reduce(
         pick(filter, ["or", "and"]),
         (result: Record<string, any[]>, current, index: string) => {
@@ -40,17 +44,21 @@ export function handleSearchData(filter: FilterArgs) {
   if (filter.dateRange) {
     const { from, to, name } = filter.dateRange;
     if (from) {
-      set(where, name + ".gte", new Date(new Date(from).setHours(0, 0, 0, 0)));
+      set(
+        data.where,
+        name + ".gte",
+        new Date(new Date(from).setHours(0, 0, 0, 0))
+      );
     }
     if (to) {
       set(
-        where,
+        data.where,
         name + ".lte",
         new Date(new Date(to).setHours(23, 59, 59, 999))
       );
     }
   }
-  return where;
+  return data;
 }
 function setColumns(columns: Columns[], where: Record<string, any>) {
   if (columns) {

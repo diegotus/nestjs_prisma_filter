@@ -11,6 +11,8 @@ export interface FilterArgs {
     dateRange?: DateRangeOptions;
     or: Columns[];
     and: Columns[];
+    take?: number;
+    skip?: number;
 }
 export interface DateRangeOptions {
     from?: string;
@@ -19,8 +21,13 @@ export interface DateRangeOptions {
 }
 export interface Columns {
     name: string;
-    search?: EmptyEnum | string |  number| boolean | string[] | number[] | boolean[];
+    search?: EmptyEnum | string | string[] | number | number[];
     orderBy?: Sort;
 }
 export declare function isEmptyEnum(value: string): boolean;
+export interface PrismaFilterData {
+    where: Record<string, any>;
+    skip?: number;
+    take?: number;
+}
 export {};
